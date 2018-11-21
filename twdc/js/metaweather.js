@@ -1,70 +1,61 @@
 (function() {
     // Create the connector object
     var myConnector = tableau.makeConnector();
- 
-    // ************************************************************
-    // Update getSchema() function with correct fields and tables
-    // Test in the Simulator
-    // ************************************************************
+
+    // Define the schema
     myConnector.getSchema = function(schemaCallback) {
-        // define columns in the table
         var cols = [{
-            id: "applicable_date",
-            dataType: tableau.dataTypeEnum.date,
-            alias: "Date",
+            id: "id",
+            dataType: tableau.dataTypeEnum.string
         }, {
-            id: "weather_state_name",
-            dataType: tableau.dataTypeEnum.string,
-            alias: "Weather State",
+            id: "mag",
+            alias: "magnitude",
+            dataType: tableau.dataTypeEnum.float
         }, {
-            id: "min_temp",
-            dataType: tableau.dataTypeEnum.float,
-            alias: "Min Temp",
+            id: "title",
+            alias: "title",
+            dataType: tableau.dataTypeEnum.string
         }, {
-            id: "max_temp",
-            dataType: tableau.dataTypeEnum.float,
-            alias: "Max Temp",
+            id: "location",
+            dataType: tableau.dataTypeEnum.geometry
         }];
- 
+
         var tableSchema = {
-            id: "metaweather",
-            alias: "MetaWeather - Chicago IL",
+            id: "earthquakeFeed",
+            alias: "Earthquakes with magnitude greater than 4.5 in the last seven days",
             columns: cols
         };
- 
+
         schemaCallback([tableSchema]);
     };
- 
+
     // Download the data
     myConnector.getData = function(table, doneCallback) {
-         
-        // Change the url in the getJSON() function to point at your API
-        $.getJSON("https://metaweather.com/api/location/2379574/", function(resp) {
-            var feat = resp.consolidated_weather,
+        $.getJSON("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson", function(resp) {
+            var feat = resp.features,
                 tableData = [];
- 
-            // Update getData() function to iterate through your API response array
-            for (var i = 0, len = feat.length; i < len; i++) {  
-                // Update getData() function with correct field names
+
+            // Iterate over the JSON object
+            for (var i = 0, len = feat.length; i < len; i++) {
                 tableData.push({
-                    "applicable_date": feat[i].applicable_date, 
-                    "weather_state_name": feat[i].weather_state_name, 
-                    "min_temp": feat[i].min_temp, 
-                    "max_temp": feat[i].max_temp
+                    "id": feat[i].id,
+                    "mag": feat[i].properties.mag,
+                    "title": feat[i].properties.title,
+                    "location": feat[i].geometry
                 });
             }
- 
+
             table.appendRows(tableData);
             doneCallback();
         });
     };
- 
+
     tableau.registerConnector(myConnector);
- 
+
     // Create event listeners for when the user submits the form
     $(document).ready(function() {
         $("#submitButton").click(function() {
-            tableau.connectionName = "MetaWeather - Chicago IL"; // This will be the data source name in Tableau
+            tableau.connectionName = "USGS Earthquake Feed"; // This will be the data source name in Tableau
             tableau.submit(); // This sends the connector object to Tableau
         });
     });
