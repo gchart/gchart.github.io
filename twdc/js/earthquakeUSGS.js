@@ -4,6 +4,7 @@
 
     // Define the schema
     myConnector.getSchema = function(schemaCallback) {
+        // define columns in the table
         var cols = [{
             id: "id",
             dataType: tableau.dataTypeEnum.string

@@ -2,28 +2,25 @@
     // Create the connector object
     var myConnector = tableau.makeConnector();
  
-    // ************************************************************
-    // Update getSchema() function with correct fields and tables
-    // Test in the Simulator
-    // ************************************************************
+    // Define the schema
     myConnector.getSchema = function(schemaCallback) {
         // define columns in the table
         var cols = [{
             id: "applicable_date",
             dataType: tableau.dataTypeEnum.date,
-            alias: "Date",
+            alias: "Date"
         }, {
             id: "weather_state_name",
             dataType: tableau.dataTypeEnum.string,
-            alias: "Weather State",
+            alias: "Weather State"
         }, {
             id: "min_temp",
             dataType: tableau.dataTypeEnum.float,
-            alias: "Min Temp",
+            alias: "Min Temp"
         }, {
             id: "max_temp",
             dataType: tableau.dataTypeEnum.float,
-            alias: "Max Temp",
+            alias: "Max Temp"
         }];
  
         var tableSchema = {
