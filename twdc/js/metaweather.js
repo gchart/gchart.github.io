@@ -39,7 +39,7 @@
     myConnector.getData = function(table, doneCallback) {
          
         // Change the url in the getJSON() function to point at your API
-        $.getJSON("metaweather.com/api/location/2379574/", function(resp) {
+        $.getJSON("https://metaweather.com/api/location/2379574/", function(resp) {
             var feat = resp.consolidated_weather,
                 tableData = [];
  
